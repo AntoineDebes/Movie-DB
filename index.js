@@ -1,6 +1,12 @@
 const express = require('express')
 const app = express()
 const port = parseFloat(process.argv[2]);
+const movies = [
+    { title: 'Jaws', year: 1975, rating: 8 },
+    { title: 'Avatar', year: 2009, rating: 7.8 },
+    { title: 'Brazil', year: 1985, rating: 8 },
+    { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }
+]
 
 
 app.get('/', (req, res) => {
@@ -37,7 +43,8 @@ app.get('/hello/:id?', (req, res,) => {
     let id = req.params.id;
     let response = {
         status:200,
-        message:`Hello, ${id !== undefined? id : "User"}`}
+        message:`Hello, ${id !== undefined? id : "User"}`
+    }
    res.send(response);
 })
 
@@ -50,22 +57,37 @@ app.get('/search/:search?', (req, res) => {
     res.send(response())
 })
 
-// /**
-//  * Startup function
-//  */
-// function startApp () {
-//     process.stdin.on('data', onDataReceived);
-// }
+// Step 5
 
 /**
- * Tests the data that we received from the terminal
+ * Creates a movie
  */
 
-// function onDataReceived () {
-//     console.log('yes');
-// }
+app.get('/movies/create', (req, res) => {
+    
+})
 
 /**
- * This is a call-back function that starts our app
+ * Read a mvoie
  */
-// startApp();
+
+app.get('/movies/read', (req, res) => {
+    let response = {status:200, data: movies };
+    res.send(response);
+})
+
+/**
+ * Update a movie
+ */
+
+app.get('/movies/update', (req, res) => {
+    
+})
+
+/**
+ * Delete a movie
+ */
+
+app.get('/movies/delete', (req, res) => {
+    
+})
