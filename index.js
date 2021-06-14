@@ -75,14 +75,20 @@ app.get('/movies/read/:text?', (req, res) => {
     let text = req.params.text;
     let output;
     if(text === 'by-date') {
-        output = movies.sort((a, b) => a.year - b.year)
+        output = {status:200, data: movies.sort((a, b) => a.year - b.year)}
     }else if(text === 'by-rating'){
-        output = movies.sort((a, b) => b.rating - a.rating)
+        output = {status:200, data: movies.sort((a, b) => b.rating - a.rating)}
     }else if(text === 'by-title'){
-        output = movies.sort((a, b) => b.title - a.title)
+        output = {status:200, data: movies.sort((a, b) => b.title - a.title)}
+    }else if(text.match(/[id/\d+$]/g)){
+        let number = text.match(/\d+/);
+        if(number <= movies.length){
+            output = movies[number];
+        }else{
+            output = {status:404, error:true, message:`the movie ${number} does not exist`}
+        }
     }
-    let response = {status:200, data: output }
-    res.send(response)
+    res.status(output.status).send(output);
 })
 
 /**
