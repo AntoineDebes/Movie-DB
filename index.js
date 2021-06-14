@@ -71,9 +71,18 @@ app.get('/movies/create', (req, res) => {
  * Read a mvoie
  */
 
-app.get('/movies/read', (req, res) => {
-    let response = {status:200, data: movies };
-    res.send(response);
+app.get('/movies/read/:text?', (req, res) => {
+    let text = req.params.text;
+    let output;
+    if(text === 'by-date') {
+        output = movies.sort((a, b) => a.year - b.year)
+    }else if(text === 'by-rating'){
+        output = movies.sort((a, b) => b.rating - a.rating)
+    }else if(text === 'by-title'){
+        output = movies.sort((a, b) => b.title - a.title)
+    }
+    let response = {status:200, data: output }
+    res.send(response)
 })
 
 /**
