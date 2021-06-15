@@ -1,6 +1,7 @@
-const express = require('express')
-const app = express()
-const port = parseFloat(process.argv[2]);
+const { query } = require('express');
+
+const app = require('express')();
+const port = process.argv[2] !== undefined? parseFloat(process.argv[2]) : "3000" ;
 const movies = [
     { title: 'Jaws', year: 1975, rating: 8 },
     { title: 'Avatar', year: 2009, rating: 7.8 },
@@ -8,10 +9,10 @@ const movies = [
     { title: 'الإرهاب والكباب‎', year: 1992, rating: 6.2 }
 ]
 
-
 app.get('/', (req, res) => {
   res.send('Ok')
 })
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
@@ -62,10 +63,29 @@ app.get('/search/:search?', (req, res) => {
 /**
  * Creates a movie
  */
+app.get('/movies/add?', (req, res) => {
+    let title = req.query.title;
+    let year = req.query.year;
+    let rating = req.query.rating;
+    let output;
 
-app.get('/movies/create', (req, res) => {
-    
-})
+    if (title !== undefined && year !== undefined && (/^\d{4}$/).test(year)) {
+        if (rating !== undefined) {
+        movies.push({ title: title, year: year, rating: rating });
+        output = { status: 200, data: movies };
+        } else {
+        movies.push({ title: title, year: year, rating: 4 });
+        output = { status: 200, data: movies };
+        }
+    } else {
+        output = {
+        status: 403,
+        error: true,
+        message: "you cannot create a movie without providing a title and a year",
+        };
+    }
+    res.send(output);
+});
 
 /**
  * Read a mvoie
@@ -75,11 +95,11 @@ app.get('/movies/read/:text?', (req, res) => {
     let text = req.params.text;
     let output;
     if(text === 'by-date') {
-        output = {status:200, data: movies.sort((a, b) => a.year - b.year)}
+        output = {status:200, data: movies.slice().sort((a, b) => a.year - b.year)}
     }else if(text === 'by-rating'){
-        output = {status:200, data: movies.sort((a, b) => b.rating - a.rating)}
+        output = {status:200, data: movies.slice().sort((a, b) => b.rating - a.rating)}
     }else if(text === 'by-title'){
-        output = {status:200, data: movies.sort((a, b) => b.title - a.title)}
+        output = {status:200, data: movies.slice().sort((a, b) => b.title - a.title)}
     }else if(text.match(/[id/\d+$]/g)){
         let number = text.match(/\d+/);
         if(number <= movies.length){
