@@ -123,6 +123,15 @@ app.get('/movies/update', (req, res) => {
  * Delete a movie
  */
 
-app.get('/movies/delete', (req, res) => {
-    
+app.get('/movies/delete/:id', (req, res) => {
+    let id = req.params.id;
+    let output;
+    // let test = movies.length;
+    if(id <= movies.length){
+        movies.splice(id-1, 1);
+        output = movies;
+    }else{
+        output = {status:404, error:true, message:`the movie ${id} does not exist`}
+    }
+    res.send(output);
 })
