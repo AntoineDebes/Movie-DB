@@ -70,14 +70,17 @@ app.get('/movies/add?', (req, res) => {
     let output;
 
     if (title !== undefined && year !== undefined && (/^\d{4}$/).test(year)) {
+        
         if (rating !== undefined) {
         movies.push({ title: title, year: year, rating: rating });
         output = { status: 200, data: movies };
-        } else {
+        }
+        else {
         movies.push({ title: title, year: year, rating: 4 });
         output = { status: 200, data: movies };
         }
-    } else {
+    }
+    else {
         output = {
         status: 403,
         error: true,
@@ -94,17 +97,22 @@ app.get('/movies/add?', (req, res) => {
 app.get('/movies/read/:text?', (req, res) => {
     let text = req.params.text;
     let output;
+
     if(text === 'by-date') {
         output = {status:200, data: movies.slice().sort((a, b) => a.year - b.year)}
-    }else if(text === 'by-rating'){
+    }
+    else if(text === 'by-rating'){
         output = {status:200, data: movies.slice().sort((a, b) => b.rating - a.rating)}
-    }else if(text === 'by-title'){
+    }
+    else if(text === 'by-title'){
         output = {status:200, data: movies.slice().sort((a, b) => b.title - a.title)}
-    }else if(text.match(/[id/\d+$]/g)){
+    }
+    else if(text.match(/[id/\d+$]/g)){
         let number = text.match(/\d+/);
         if(number <= movies.length){
             output = movies[number];
-        }else{
+        }
+        else{
             output = {status:404, error:true, message:`the movie ${number} does not exist`}
         }
     }
@@ -115,8 +123,36 @@ app.get('/movies/read/:text?', (req, res) => {
  * Update a movie
  */
 
-app.get('/movies/update', (req, res) => {
-    
+app.get('/movies/update/:id(\\d+)', (req, res) => {
+    let id = req.params.id - 1;
+    let title = req.query.title;
+    let year = req.query.year;
+    let rating = req.query.rating;
+    let output;
+  
+    if (movies.length >= id) {
+      if (title === undefined || title === "") {
+        title = movies[id].title;
+      }
+  
+      if (year === undefined || year === "" || !(/^\d{4}$/).test(year)) {
+        year = movies[id].year;
+      }
+  
+      if (rating === undefined || rating === "") {
+        rating = movies[id].rating;
+      }
+      movies[id] = {title, year,rating};
+      output = {data: movies };
+      res.status(200).send(output)
+    } 
+    else {
+      output = {
+        error: true,
+        message: `the movie ${id+1} does not exist`,
+      };
+      res.status(404).send(output)
+    }    
 })
 
 /**
