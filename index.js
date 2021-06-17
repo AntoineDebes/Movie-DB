@@ -21,7 +21,7 @@ app.listen(port, () => {
 app.get('/test', (req, res) => {
     let data = {
         status: 200,
-        message: 'Ok'
+        message: 'Hello'
     };
 
     res.send(data);
@@ -63,7 +63,7 @@ app.get('/search/:search?', (req, res) => {
 /**
  * Creates a movie
  */
-app.get('/movies/add?', (req, res) => {
+app.post('/movies/add?', (req, res) => {
     let title = req.query.title;
     let year = req.query.year;
     let rating = req.query.rating;
@@ -123,7 +123,7 @@ app.get('/movies/read/:text?', (req, res) => {
  * Update a movie
  */
 
-app.get('/movies/update/:id(\\d+)', (req, res) => {
+app.put('/movies/update/:id(\\d+)', (req, res) => {
     let id = req.params.id - 1;
     let title = req.query.title;
     let year = req.query.year;
@@ -159,7 +159,7 @@ app.get('/movies/update/:id(\\d+)', (req, res) => {
  * Delete a movie
  */
 
-app.get('/movies/delete/:id', (req, res) => {
+app.delete('/movies/delete/:id', (req, res) => {
     let id = req.params.id;
     let output;
     // let test = movies.length;
